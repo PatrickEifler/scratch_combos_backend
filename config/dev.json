@@ -1,0 +1,13 @@
+{
+    "env": "dev",
+    "sequelize": {
+        "database": "scratch_lib_db",
+        "username": "postgres",
+        "password": "postgres",
+        "options": {
+            "host": "127.0.0.1",
+            "dialect": "postgres",
+            "port": 5432
+        }
+    }
+}
