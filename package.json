@@ -20,7 +20,8 @@
     "pg": "^4.5.5",
     "pg-hstore": "^2.3.2",
     "rc": "^1.1.6",
-    "sequelize": "^3.23.3"
+    "sequelize": "^3.23.3",
+    "koa-sslify": "^1.0.1"
   },
   "devDependencies": {
     "chai": "^3.5.0",

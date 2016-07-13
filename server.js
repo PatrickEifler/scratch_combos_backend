@@ -1,5 +1,10 @@
 const app = require('./app');
+const fs = require('fs');
+const https = require('https');
 
-app.listen(3000, () => {
-	console.log('Listening on port 3000');
-});
+const options = {
+  key: fs.readFileSync('domain.key'),
+  cert: fs.readFileSync('domain.crt')
+};
+
+https.createServer(options, app.callback()).listen(3001);

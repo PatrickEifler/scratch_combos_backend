@@ -1,12 +1,20 @@
 'use strict';
 const assert = require('chai').assert;
 const request = require('request');
-const http = require('http');
 const app = require('../app');
 const uuid = require('uuid');
 let conf = {};
 let rc = require('rc')('koa-sequelize-app', conf);
 const nock = require('nock');
+const fs = require('fs');
+const https = require('https');
+
+const sslOptions = {
+  key: fs.readFileSync('domain.key'),
+  cert: fs.readFileSync('domain.crt')
+};
+
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 describe('Api Test', () => {
   const PORT = 3001;
@@ -18,7 +26,7 @@ describe('Api Test', () => {
   const token = '2f1ds01d-51a9-4171-1165-a11941111014';
 
   before((done) => {
-    server = http.createServer(app.callback()).listen(PORT);
+    server = https.createServer(sslOptions, app.callback()).listen(PORT);
     //throw if not test env
     if (conf.env === 'test') {
       app.context.db.sync().then(function () {
@@ -53,7 +61,7 @@ describe('Api Test', () => {
         headers: {
           authorization: `bearer ${token}`
         },
-        url: `http://localhost:${PORT}/combos/${comboUUID}`,
+        url: `https://localhost:${PORT}/combos/${comboUUID}`,
         method: 'GET',
         json: true
       };
@@ -61,6 +69,7 @@ describe('Api Test', () => {
 
     it('should respond with 200', (done) => {
       request(req, (err, res, body) => {
+        console.log('==============================', err, res);
         assert.equal(res.statusCode, 200);
         done();
       });
@@ -84,7 +93,7 @@ describe('Api Test', () => {
           headers: {
             authorization: `bearer ${token}`
           },
-          url: `http://localhost:${PORT}/combos/${invalidUUID}`,
+          url: `https://localhost:${PORT}/combos/${invalidUUID}`,
           method: 'GET',
           json: true,
         };
@@ -113,7 +122,7 @@ describe('Api Test', () => {
         headers: {
           authorization: `bearer ${token}`
         },
-        url: `http://localhost:${PORT}/combos`,
+        url: `https://localhost:${PORT}/combos`,
         method: 'POST',
         body: combo,
         json: true
@@ -159,7 +168,7 @@ describe('Api Test', () => {
         headers: {
           authorization: `bearer ${token}`
         },
-        url: `http://localhost:${PORT}/combos/${comboUUID}`,
+        url: `https://localhost:${PORT}/combos/${comboUUID}`,
         method: 'PATCH',
         body: patch,
         json: true
@@ -215,7 +224,7 @@ describe('Api Test', () => {
         headers: {
           authorization: `bearer ${token}`
         },
-        url: `http://localhost:${PORT}/combos?isDone=false`,
+        url: `https://localhost:${PORT}/combos?isDone=false`,
         method: 'GET',
         json: true
       };
@@ -262,7 +271,7 @@ describe('Api Test', () => {
           headers: {
             authorization: `bearer ${token}`
           },
-          url: `http://localhost:${PORT}/combos?isDone=true`,
+          url: `https://localhost:${PORT}/combos?isDone=true`,
           method: 'GET',
           json: true
         };
@@ -311,7 +320,7 @@ describe('Api Test', () => {
           headers: {
             authorization: `bearer ${token}`
           },
-          url: `http://localhost:${PORT}/combos`,
+          url: `https://localhost:${PORT}/combos`,
           method: 'GET',
           json: true
         };
@@ -344,7 +353,7 @@ describe('Api Test', () => {
         headers: {
           authorization: 'bearer 2f1ds01d-51a9-4171-1165-a11944243014'
         },
-        url: `http://localhost:${PORT}/combos/${comboUUID}`,
+        url: `https://localhost:${PORT}/combos/${comboUUID}`,
         method: 'GET',
         json: true
       };
@@ -369,7 +378,7 @@ describe('Api Test', () => {
         .reply(403);
 
       req = {
-        url: `http://localhost:${PORT}/combos/${comboUUID}`,
+        url: `https://localhost:${PORT}/combos/${comboUUID}`,
         method: 'GET',
         json: true
       };
