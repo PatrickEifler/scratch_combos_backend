@@ -6,8 +6,8 @@
   "scripts": {
     "start": "node server.js --config config/dev.json",
     "start-test": "node server.js --config config/test.json",
-    "test": "./node_modules/mocha/bin/mocha test --config config/test.json",
-    "watch": "./node_modules/mocha/bin/mocha test --config config/test.json -w --harmony",
+    "test": "NODE_TLS_REJECT_UNAUTHORIZED=0 ./node_modules/mocha/bin/mocha test --config config/test.json",
+    "watch": "NODE_TLS_REJECT_UNAUTHORIZED=0 ./node_modules/mocha/bin/mocha test --config config/test.json -w --harmony",
     "node-deb": "./node_modules/node-deb/node-deb -- app.js server.js routes lib db controllers config node_modules package.json npm-shrinkwrap.json"
   },
   "author": "Patrick Eifler",
